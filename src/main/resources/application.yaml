@@ -1,0 +1,17 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+    url: jdbc:mysql://localhost:30006/performance_analyze
+  jpa:
+    database: mysql
+    hibernate:
+      ddl-auto: none
+feign:
+  okhttp:
+    enabled: true
+  wecom-robot: <wecom-bot-url>
