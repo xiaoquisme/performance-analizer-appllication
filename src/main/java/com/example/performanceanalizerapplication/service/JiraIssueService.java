@@ -2,6 +2,7 @@ package com.example.performanceanalizerapplication.service;
 
 import com.example.performanceanalizerapplication.entity.JiraIssue;
 import com.example.performanceanalizerapplication.entity.JiraWorklog;
+import com.example.performanceanalizerapplication.repo.JiraEpicRepository;
 import com.example.performanceanalizerapplication.repo.JiraIssueRepository;
 import com.example.performanceanalizerapplication.repo.JiraWorklogRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,10 +27,11 @@ import static org.apache.logging.log4j.util.Strings.isBlank;
 public class JiraIssueService {
     private final JiraIssueRepository issueRepository;
     private final JiraWorklogRepository worklogRepository;
+    private final JiraEpicRepository epicRepository;
 
     public List<JiraIssue> getNotFillTimeTrackingIssues(String sprintName) {
         Map<Long, JiraIssue> issues = issueRepository.findAllByCurrentSprintAndStatusIs(sprintName, "IN DEV").stream().collect(Collectors.toMap(JiraIssue::getId, Function.identity()));
-        List<Long> notFillTimeTrackingIssueIds = issues.values().stream().filter(item -> isBlank(item.getTimetrackingSpent())).map(item -> item.getId()).toList();
+        List<Long> notFillTimeTrackingIssueIds = issues.values().stream().filter(item -> isBlank(item.getTimetrackingSpent())).map(JiraIssue::getId).toList();
         List<Long> issueIds = issues.values().stream()
                 .map(JiraIssue::getId)
                 .filter(item -> !notFillTimeTrackingIssueIds.contains(item))
@@ -59,5 +61,20 @@ public class JiraIssueService {
                 .distinct()
                 .map(issues::get)
                 .toList();
+    }
+
+    // getNotFillEpicIssues
+    public List<JiraIssue> getNotFillEpicIssues(String sprintName) {
+        Map<Long, JiraIssue> issues = issueRepository.findAllByCurrentSprint(sprintName).stream().collect(Collectors.toMap(JiraIssue::getId, Function.identity()));
+        return issues.values().stream().filter(item -> isBlank(item.getEpicKey())).toList();
+    }
+
+//    public List<JiraIssue> getNotFillFixVersionIssues(String sprintName) {
+//        Map<Long, JiraIssue> issues = issueRepository.findAllByCurrentSprint(sprintName).stream().collect(Collectors.toMap(JiraIssue::getId, Function.identity()));
+//        return issues.values().stream().filter(item -> CollectionUtils.isEmpty(item.getFixVersions())).toList();
+//    }
+
+    public List<JiraIssue> getBacklogIssuesHadAssignee(String sprintName) {
+        return issueRepository.findAllByCurrentSprintAndStatusIsAndAssigneeIsNotNull(sprintName, "BACKLOG");
     }
 }

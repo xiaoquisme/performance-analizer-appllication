@@ -1,6 +1,5 @@
 server:
   port: 8080
-
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -11,6 +10,10 @@ spring:
     database: mysql
     hibernate:
       ddl-auto: none
+    properties:
+      hibernate:
+        session_factory:
+          statement_inspector: com.example.performanceanalizerapplication.hibernate.CustomStatementInspector
 feign:
   okhttp:
     enabled: true

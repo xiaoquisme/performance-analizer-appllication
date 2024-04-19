@@ -9,4 +9,7 @@ public interface JiraIssueRepository extends JpaRepository<JiraIssue, Long> {
     List<JiraIssue> findAllByCurrentSprint(String currentSprint);
 
     List<JiraIssue> findAllByCurrentSprintAndStatusIs(String sprintName, String status);
+
+    List<JiraIssue> findAllByCurrentSprintAndStatusIsAndAssigneeIsNotNull(String sprintName, String status);
+
 }
