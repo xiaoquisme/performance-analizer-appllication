@@ -25,8 +25,12 @@ public class JiraIssueController {
         weComNotificationClient.sendNotFillEpicNotification(notFillEpicIssues, sprintName);
 
 //        // notfillfixVersionIssues
-//        List<JiraIssue> notFillFixVersionIssues = jiraIssueService.getNotFillFixVersionIssues(sprintName);
-//        weComNotificationClient.sendNotFillFixVersionNotification(notFillFixVersionIssues, sprintName);
+        List<JiraIssue> notFillFixVersionIssues = jiraIssueService.getNotFillFixVersionIssues(sprintName);
+        weComNotificationClient.sendNotFillFixVersionNotification(notFillFixVersionIssues, sprintName);
+
+        // notFillLablesIssues
+        List<JiraIssue> notFillLabelsIssues = jiraIssueService.getNotFillLablesIssues(sprintName);
+        weComNotificationClient.sendNotFillLablesNotification(notFillLabelsIssues, sprintName);
 
         // backlogIssuesHadAssignee
         List<JiraIssue> backlogIssuesHadAssignee = jiraIssueService.getBacklogIssuesHadAssignee(sprintName);

@@ -10,6 +10,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -62,6 +63,18 @@ public class WeComNotificationClient {
                 .addRow("卡号", "邮箱");
         backlogIssuesHadAssignee.forEach(item -> builder.addRow(item.getKey(), item.getAssignee()));
         WeComRequest request = WeComRequest.create(String.format("在sprint %s  backlog 的这些卡，已经有DEV开发了。 \n", sprintName) + builder.build().toString());
+        client.sendNotification(request);
+    }
+
+    public void sendNotFillLablesNotification(List<JiraIssue> notFillLablesIssues, String sprintName) {
+        if (CollectionUtils.isEmpty(notFillLablesIssues)) {
+            return;
+        }
+
+        Table.Builder builder = new Table.Builder()
+                .addRow("卡号", "邮箱");
+        notFillLablesIssues.forEach(item -> builder.addRow(item.getKey(), Optional.ofNullable(item.getAssignee()).orElse(item.getReporter())));
+        WeComRequest request = WeComRequest.create(String.format("在sprint %s 的这些卡，没有填 labels。 \n", sprintName) + builder.build().toString());
         client.sendNotification(request);
     }
 
